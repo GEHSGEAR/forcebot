@@ -4,21 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "_27112Omnidrive (Blocks to Java)")
-public class _27112Omnidrive extends LinearOpMode {
+@TeleOp(name = "27112 Omnidrive (Java)")
+public class Teleop27112 extends LinearOpMode {
 
   private DcMotor back_left_motor;
   private DcMotor front_left_motor;
   private DcMotor front_right_motor;
   private DcMotor back_right_motor;
-
-  /**
-   * This sample contains the bare minimum Blocks for any regular OpMode. The 3 blue
-   * Comment Blocks show where to place Initialization code (runs once, after touching the
-   * DS INIT button, and before touching the DS Start arrow), Run code (runs once, after
-   * touching Start), and Loop code (runs repeatedly while the OpMode is active, namely not
-   * Stopped).
-   */
+  private DcMotor arm_slide;
+  
   @Override
   public void runOpMode() {
     double Speed;
@@ -27,11 +21,12 @@ public class _27112Omnidrive extends LinearOpMode {
     front_left_motor = hardwareMap.get(DcMotor.class, "front_left_motor");
     front_right_motor = hardwareMap.get(DcMotor.class, "front_right_motor");
     back_right_motor = hardwareMap.get(DcMotor.class, "back_right_motor");
+    arm_slide = hardwareMap.get(DcMotor.class, "Arm Slide");
 
     // Put initialization blocks here.
-    back_left_motor.setDirection(DcMotor.Direction.REVERSE);
+    front_right_motor.setDirection(DcMotor.Direction.REVERSE);
     Speed = 0.5;
-    front_left_motor.setDirection(DcMotor.Direction.REVERSE);
+    back_right_motor.setDirection(DcMotor.Direction.REVERSE);
     waitForStart();
     if (opModeIsActive()) {
       // Put run blocks here.
@@ -49,12 +44,17 @@ public class _27112Omnidrive extends LinearOpMode {
         } else {
           Speed = 0.5;
         }
-        front_left_motor.setPower(((gamepad1.left_stick_y - gamepad1.left_stick_x) - gamepad1.right_stick_x) * Speed);
-        front_right_motor.setPower((gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * Speed);
-        back_left_motor.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x) - gamepad1.right_stick_x) * Speed);
-        back_right_motor.setPower(((gamepad1.left_stick_y - gamepad1.left_stick_x) + gamepad1.right_stick_x) * Speed);
-        // Put loop blocks here.
-        telemetry.update();
+        front_left_motor.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x) + gamepad1.right_stick_x) * Speed);
+        front_right_motor.setPower((gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * Speed);
+        back_left_motor.setPower(((gamepad1.left_stick_y - gamepad1.left_stick_x) + gamepad1.right_stick_x) * Speed);
+        back_right_motor.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x) - gamepad1.right_stick_x) * Speed);
+        if (gamepad1.dpad_up) {
+          arm_slide.setPower(0.6);
+        } else if (gamepad1.dpad_down) {
+          arm_slide.setPower(-0.6);
+        } else {
+          arm_slide.setPower(0);
+        }
       }
     }
   }
